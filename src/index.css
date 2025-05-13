@@ -59,17 +59,51 @@
 
 @layer components {
   .card-gradient {
-    background: linear-gradient(225deg, rgba(155, 135, 245, 0.1) 0%, rgba(26, 31, 44, 0.1) 100%);
+    background: linear-gradient(225deg, rgba(155, 135, 245, 0.15) 0%, rgba(26, 31, 44, 0.15) 100%);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(155, 135, 245, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card-gradient::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(155, 135, 245, 0.1) 0%, transparent 60%);
+    animation: rotate 15s linear infinite;
+    z-index: -1;
   }
   
   .hero-gradient {
-    background: radial-gradient(circle at 50% 50%, rgba(155, 135, 245, 0.2) 0%, rgba(26, 31, 44, 0.1) 100%);
+    background: radial-gradient(circle at 50% 50%, rgba(155, 135, 245, 0.3) 0%, rgba(26, 31, 44, 0.1) 70%);
+    position: relative;
   }
   
   .btn-gradient {
     background: linear-gradient(90deg, rgba(155, 135, 245, 1) 0%, rgba(139, 92, 246, 1) 100%);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+  
+  .btn-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.5s;
+    z-index: -1;
+  }
+  
+  .btn-gradient:hover::before {
+    left: 100%;
   }
   
   .table-pricing th, .table-pricing td {
@@ -82,13 +116,135 @@
   
   .pricing-card {
     @apply relative rounded-xl overflow-hidden card-gradient p-6 transition-all duration-300;
+    box-shadow: 0 0 20px rgba(155, 135, 245, 0.1);
   }
   
   .pricing-card:hover {
-    @apply shadow-lg shadow-arabfunded-primary/20 scale-[1.02];
+    @apply shadow-lg scale-[1.02];
+    box-shadow: 0 0 30px rgba(155, 135, 245, 0.3);
   }
   
   .pricing-card .highlight {
-    @apply absolute -right-4 -top-4 w-20 h-20 rotate-45 bg-arabfunded-primary flex items-end justify-center pb-2;
+    @apply absolute -right-4 -top-4 w-20 h-20 rotate-45 flex items-end justify-center pb-2;
+    background: linear-gradient(135deg, #9b87f5 0%, #8B5CF6 100%);
+  }
+
+  /* Glowing elements */
+  .glow {
+    @apply relative;
+  }
+  
+  .glow::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    z-index: -1;
+    background: radial-gradient(circle, rgba(155, 135, 245, 0.8) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .glow:hover::after {
+    opacity: 0.5;
+  }
+  
+  /* Animated background particles */
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(155, 135, 245, 0.5);
+    pointer-events: none;
+    transform-origin: center;
+  }
+  
+  /* Floating animation */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(2deg);
+    }
+  }
+  
+  @keyframes floatAlt {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(-2deg);
+    }
+  }
+  
+  /* Glow pulse animation */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.05);
+    }
+  }
+  
+  /* Rotate animation */
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Shimmering text effect */
+  .text-shimmer {
+    background: linear-gradient(90deg, 
+      rgba(155, 135, 245, 1) 0%, 
+      rgba(139, 92, 246, 1) 25%, 
+      rgba(139, 92, 246, 1) 50%, 
+      rgba(155, 135, 245, 1) 75%, 
+      rgba(139, 92, 246, 1) 100%);
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+  }
+  
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
+  }
+  
+  /* Fade in animation */
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Motion blur effect */
+  .motion-blur {
+    filter: blur(4px);
+    transition: filter 0.3s ease;
+  }
+  
+  .motion-blur:hover {
+    filter: blur(0);
   }
 }

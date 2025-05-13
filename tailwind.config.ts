@@ -63,18 +63,24 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom colors for Arab Funded
+				// Custom colors for Arab Funded - Enhanced with more vibrant options
 				arabfunded: {
 					primary: '#9b87f5',
 					secondary: '#7E69AB',
 					dark: '#1A1F2C',
 					light: '#D6BCFA',
-					accent: '#8B5CF6'
+					accent: '#8B5CF6',
+					neon: '#a78bfa',
+					glow: '#c4b5fd',
+					purple: '#7c3aed',
+					blue: '#3b82f6',
+					cyan: '#06b6d4'
 				}
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 				'hero-pattern': 'url("/images/circuit-background.svg")',
+				'neon-grid': 'linear-gradient(to right, rgba(155, 135, 245, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(155, 135, 245, 0.1) 1px, transparent 1px)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -115,13 +121,42 @@ export default {
 					'50%': {
 						transform: 'translateY(-10px)'
 					}
+				},
+				'shimmer': {
+					'0%': {
+						backgroundPosition: '0% center'
+					},
+					'100%': {
+						backgroundPosition: '-200% center'
+					}
+				},
+				'pulse': {
+					'0%, 100%': {
+						opacity: '0.5',
+						transform: 'scale(1)'
+					},
+					'50%': {
+						opacity: '1',
+						transform: 'scale(1.05)'
+					}
+				},
+				'glow': {
+					'0%, 100%': {
+						boxShadow: '0 0 5px rgba(155, 135, 245, 0.5)'
+					},
+					'50%': {
+						boxShadow: '0 0 20px rgba(155, 135, 245, 0.8)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
-				'float': 'float 6s ease-in-out infinite'
+				'float': 'float 6s ease-in-out infinite',
+				'shimmer': 'shimmer 4s linear infinite',
+				'pulse': 'pulse 3s ease-in-out infinite',
+				'glow': 'glow 2s ease-in-out infinite'
 			}
 		}
 	},
