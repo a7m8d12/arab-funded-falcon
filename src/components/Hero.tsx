@@ -47,7 +47,7 @@ const Hero: React.FC = () => {
     }
   }, []);
 
-  // Candlestick chart animation
+  // Enhanced candlestick chart animation with smoother transitions
   useEffect(() => {
     const canvas = chartCanvasRef.current;
     if (!canvas) return;
@@ -55,7 +55,7 @@ const Hero: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas dimensions
+    // Set canvas dimensions to cover the entire container
     const resizeCanvas = () => {
       const parentRect = canvas.parentElement?.getBoundingClientRect();
       if (parentRect) {
@@ -67,39 +67,48 @@ const Hero: React.FC = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Chart configuration
+    // Enhanced chart configuration
     const config = {
-      candleCount: 30,
-      candleWidth: 8,
-      candleGap: 4,
-      animationSpeed: 0.2,
+      candleCount: 40,
+      candleWidth: 6,
+      candleGap: 3,
+      animationSpeed: 0.1, // Slower for smoother animation
+      transitionSpeed: 0.03, // Speed for smooth transitions
       colors: {
-        up: 'rgba(139, 92, 246, 0.8)',      // Purple for up candles
-        down: 'rgba(155, 135, 245, 0.5)',   // Lighter purple for down candles
-        wick: 'rgba(226, 232, 240, 0.8)',   // Light color for wicks
-        line: 'rgba(155, 135, 245, 0.3)',   // Semi-transparent line color
-        background: 'rgba(26, 31, 44, 0.1)' // Very subtle background
+        up: 'rgba(139, 92, 246, 0.7)',       // Purple for up candles
+        down: 'rgba(155, 135, 245, 0.4)',    // Lighter purple for down candles
+        wick: 'rgba(226, 232, 240, 0.7)',    // Light color for wicks
+        line: 'rgba(155, 135, 245, 0.2)',    // Semi-transparent line color
+        background: 'rgba(26, 31, 44, 0.1)'  // Very subtle background
       }
     };
 
     // Generate initial random data
     let data = Array(config.candleCount).fill(0).map((_, i) => {
       const basePrice = 100 + Math.random() * 50;
-      const range = 5 + Math.random() * 15;
+      const range = 3 + Math.random() * 10; // Smaller range for more realistic movements
       const open = basePrice - range / 2 + Math.random() * range;
       const close = basePrice - range / 2 + Math.random() * range;
       const high = Math.max(open, close) + Math.random() * range / 2;
       const low = Math.min(open, close) - Math.random() * range / 2;
       
-      return { open, close, high, low, animated: 0 };
+      // Add target values for smooth transitions
+      return { 
+        open, close, high, low, 
+        targetOpen: open,
+        targetClose: close,
+        targetHigh: high,
+        targetLow: low,
+        animated: 0 
+      };
     });
 
-    // Animation loop
+    // Animation loop with enhanced smoothness
     let animationFrame: number;
     const drawChart = () => {
       if (!ctx || !canvas) return;
       
-      // Clear canvas
+      // Clear canvas with a subtle fade effect
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       // Chart dimensions
@@ -120,11 +129,11 @@ const Hero: React.FC = () => {
       min -= range * 0.1;
       max += range * 0.1;
 
-      // Draw background grid
+      // Draw background grid with subtle fade effect
       ctx.strokeStyle = config.colors.line;
       ctx.lineWidth = 0.5;
       
-      // Horizontal grid lines
+      // Horizontal grid lines with fade
       for (let i = 0; i <= 4; i++) {
         const y = offsetY + (scaleY * i / 4);
         ctx.beginPath();
@@ -133,7 +142,7 @@ const Hero: React.FC = () => {
         ctx.stroke();
       }
       
-      // Vertical grid lines
+      // Vertical grid lines with fade
       for (let i = 0; i <= config.candleCount; i += 5) {
         const x = startX + i * totalCandleWidth;
         ctx.beginPath();
@@ -142,9 +151,13 @@ const Hero: React.FC = () => {
         ctx.stroke();
       }
 
-      // Draw price line
+      // Draw price line with gradient
       ctx.beginPath();
-      ctx.strokeStyle = config.colors.up;
+      const gradient = ctx.createLinearGradient(0, 0, canvasWidth, 0);
+      gradient.addColorStop(0, 'rgba(139, 92, 246, 0.1)');
+      gradient.addColorStop(0.5, 'rgba(139, 92, 246, 0.3)');
+      gradient.addColorStop(1, 'rgba(139, 92, 246, 0.1)');
+      ctx.strokeStyle = gradient;
       ctx.lineWidth = 1;
       
       data.forEach((candle, i) => {
@@ -160,7 +173,7 @@ const Hero: React.FC = () => {
       
       ctx.stroke();
 
-      // Draw candles
+      // Draw candles with enhanced visual effects
       data.forEach((candle, i) => {
         const x = startX + i * totalCandleWidth;
         const open = offsetY + scaleY - ((candle.open - min) / (max - min) * scaleY);
@@ -170,55 +183,89 @@ const Hero: React.FC = () => {
         
         // Only draw if animation progress is positive
         if (candle.animated > 0) {
-          // Draw wick
+          // Draw wick with slight glow effect
           ctx.beginPath();
           ctx.strokeStyle = config.colors.wick;
           ctx.lineWidth = 1;
+          ctx.shadowColor = config.colors.wick;
+          ctx.shadowBlur = 1;
           ctx.moveTo(x + config.candleWidth / 2, high);
           ctx.lineTo(x + config.candleWidth / 2, low);
           ctx.stroke();
+          ctx.shadowBlur = 0;
           
-          // Draw body
+          // Draw body with subtle gradient
           const bodyTop = Math.min(open, close);
           const bodyBottom = Math.max(open, close);
           const bodyHeight = bodyBottom - bodyTop;
           
-          ctx.fillStyle = candle.open < candle.close ? config.colors.up : config.colors.down;
-          ctx.fillRect(
-            x,
-            bodyTop,
-            config.candleWidth * candle.animated,
-            bodyHeight
-          );
+          const isUp = candle.open < candle.close;
+          ctx.fillStyle = isUp ? config.colors.up : config.colors.down;
+          
+          // Add slight rounded corners for a more modern look
+          const radius = Math.min(1, config.candleWidth / 4);
+          ctx.beginPath();
+          ctx.moveTo(x + radius, bodyTop);
+          ctx.lineTo(x + config.candleWidth - radius, bodyTop);
+          ctx.quadraticCurveTo(x + config.candleWidth, bodyTop, x + config.candleWidth, bodyTop + radius);
+          ctx.lineTo(x + config.candleWidth, bodyBottom - radius);
+          ctx.quadraticCurveTo(x + config.candleWidth, bodyBottom, x + config.candleWidth - radius, bodyBottom);
+          ctx.lineTo(x + radius, bodyBottom);
+          ctx.quadraticCurveTo(x, bodyBottom, x, bodyBottom - radius);
+          ctx.lineTo(x, bodyTop + radius);
+          ctx.quadraticCurveTo(x, bodyTop, x + radius, bodyTop);
+          ctx.fill();
         }
       });
       
-      // Animate candles
+      // Smooth transition to target values
       data = data.map(candle => ({
         ...candle,
+        open: candle.open + (candle.targetOpen - candle.open) * config.transitionSpeed,
+        close: candle.close + (candle.targetClose - candle.close) * config.transitionSpeed,
+        high: candle.high + (candle.targetHigh - candle.high) * config.transitionSpeed,
+        low: candle.low + (candle.targetLow - candle.low) * config.transitionSpeed,
         animated: Math.min(1, candle.animated + config.animationSpeed)
       }));
       
-      // Generate new data occasionally
-      if (Math.random() < 0.02) {
+      // Generate new data occasionally with smoother transitions
+      if (Math.random() < 0.01) {
         // Shift all data
         data = data.slice(1);
         
         // Add new candle based on the last one
         const lastCandle = data[data.length - 1];
-        const changePercent = (Math.random() - 0.5) * 2; // -1 to 1
+        const changePercent = (Math.random() - 0.5) * 1.5; // smaller range for more realistic movement
         const newClose = lastCandle.close * (1 + changePercent * 0.01);
-        const range = lastCandle.close * 0.01 * (0.5 + Math.random());
+        const range = lastCandle.close * 0.005 * (0.5 + Math.random());
         
         const newCandle = {
           open: lastCandle.close,
           close: newClose,
           high: Math.max(lastCandle.close, newClose) + range * Math.random(),
           low: Math.min(lastCandle.close, newClose) - range * Math.random(),
+          targetOpen: lastCandle.close,
+          targetClose: newClose,
+          targetHigh: Math.max(lastCandle.close, newClose) + range * Math.random(),
+          targetLow: Math.min(lastCandle.close, newClose) - range * Math.random(),
           animated: 0 // Start animation at 0
         };
         
         data.push(newCandle);
+      }
+
+      // Occasionally update existing candles for more dynamic movement
+      if (Math.random() < 0.05) {
+        const randomIndex = Math.floor(Math.random() * data.length);
+        const candle = data[randomIndex];
+        const changePercent = (Math.random() - 0.5) * 0.5;
+        
+        data[randomIndex] = {
+          ...candle,
+          targetClose: candle.close * (1 + changePercent * 0.01),
+          targetHigh: Math.max(candle.high, candle.close * (1 + Math.abs(changePercent) * 0.015)),
+          targetLow: Math.min(candle.low, candle.close * (1 - Math.abs(changePercent) * 0.015))
+        };
       }
 
       animationFrame = requestAnimationFrame(drawChart);
@@ -260,26 +307,32 @@ const Hero: React.FC = () => {
           <p className="text-lg text-gray-400 mb-10 animate-fade-in" style={{ animationDelay: '0.4s' }}>
             {t('hero.cta')}
           </p>
-          <Button className="text-lg px-8 py-6 h-auto btn-gradient animate-fade-in glow" style={{ animationDelay: '0.6s' }}>
+          <Button 
+            className="text-lg px-8 py-6 h-auto btn-gradient animate-fade-in glow" 
+            style={{ animationDelay: '0.6s' }}
+            onClick={() => window.location.href = 'https://app.arabfunded.com/auth'}
+          >
             {t('hero.button')}
             <ArrowRight className={`ml-2 rtl:rotate-180 ${isRTL ? 'mr-2 ml-0' : ''}`} />
           </Button>
         </div>
       </div>
       
-      {/* Animated candlestick chart */}
+      {/* Animated candlestick chart - Now with full width and height */}
       <div className="mt-16 w-full max-w-5xl mx-auto px-4 animate-fade-in relative z-10" style={{ animationDelay: '0.8s' }}>
         <div className="w-full h-64 md:h-80 bg-slate-900/30 rounded-xl card-gradient flex items-center justify-center overflow-hidden relative">
+          {/* Full width/height canvas container */}
+          <div className="absolute inset-0 w-full h-full">
+            <canvas 
+              ref={chartCanvasRef}
+              className="w-full h-full"
+            ></canvas>
+          </div>
+          
           <div className="flex items-center gap-2 text-arabfunded-primary text-xl z-10">
             <ChartCandlestick size={24} className="animate-pulse" />
             <span>Live Trading Visualization</span>
           </div>
-          
-          {/* Candlestick chart canvas */}
-          <canvas 
-            ref={chartCanvasRef}
-            className="absolute inset-0 w-full h-full"
-          ></canvas>
         </div>
       </div>
     </section>

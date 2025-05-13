@@ -9,6 +9,10 @@ import { Menu, X } from 'lucide-react';
 const Header: React.FC = () => {
   const { t, isRTL } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  const handleRedirect = () => {
+    window.location.href = 'https://app.arabfunded.com/auth';
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-slate-800">
@@ -34,10 +38,10 @@ const Header: React.FC = () => {
             {t('pricing')}
           </Link>
           <LanguageToggle />
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={handleRedirect}>
             {t('login')}
           </Button>
-          <Button className="btn-gradient">
+          <Button className="btn-gradient" onClick={handleRedirect}>
             {t('signup')}
           </Button>
         </nav>
@@ -65,10 +69,10 @@ const Header: React.FC = () => {
               <span className="text-white">{t('language')}</span>
               <LanguageToggle />
             </div>
-            <Button variant="outline" size="sm" className="w-full">
+            <Button variant="outline" size="sm" className="w-full" onClick={handleRedirect}>
               {t('login')}
             </Button>
-            <Button className="w-full btn-gradient">
+            <Button className="w-full btn-gradient" onClick={handleRedirect}>
               {t('signup')}
             </Button>
           </div>

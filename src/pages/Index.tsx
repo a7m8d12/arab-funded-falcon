@@ -14,6 +14,23 @@ const Index = () => {
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+    
+    // Update all CTA buttons to redirect to Arab Funded auth
+    const updateCTAButtons = () => {
+      const ctaButtons = document.querySelectorAll('.cta-button');
+      ctaButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = 'https://app.arabfunded.com/auth';
+        });
+      });
+    };
+    
+    // Run once on mount and then again after a short delay to ensure all elements are loaded
+    updateCTAButtons();
+    const timeoutId = setTimeout(updateCTAButtons, 1000);
+    
+    return () => clearTimeout(timeoutId);
   }, [isRTL]);
 
   return (
@@ -27,7 +44,7 @@ const Index = () => {
       <CTASection />
       <footer className="py-8 bg-background border-t border-gray-800">
         <div className="container mx-auto px-4 text-center text-gray-500">
-          <p>© 2025 Arab Funded. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Arab Funded. All rights reserved.</p>
         </div>
       </footer>
     </div>
