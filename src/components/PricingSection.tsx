@@ -56,7 +56,7 @@ const PricingSection: React.FC = () => {
   }, []);
 
   return (
-    <section id="pricing" className={`py-20 bg-background relative ${isRTL ? 'rtl' : 'ltr'}`}>
+    <section id="pricing" className={`py-20 bg-transparent relative ${isRTL ? 'rtl' : 'ltr'}`}>
       {/* Particles container */}
       <div ref={particlesRef} className="absolute inset-0 overflow-hidden pointer-events-none"></div>
       
@@ -86,7 +86,7 @@ const PricingSection: React.FC = () => {
           {pricingData.map((plan, index) => (
             <div 
               key={index} 
-              className={`pricing-card ${plan.popular ? 'ring-2 ring-arabfunded-primary/50 transform scale-[1.02]' : ''}`}
+              className={`pricing-card bg-black/20 backdrop-blur-md ${plan.popular ? 'ring-2 ring-arabfunded-primary/50 transform scale-[1.02]' : ''}`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {plan.popular && <div className="highlight"><span className="transform -rotate-45 text-white text-xs">Popular</span></div>}
@@ -132,7 +132,7 @@ const PricingSection: React.FC = () => {
         </div>
 
         {/* Desktop pricing table */}
-        <div className="hidden md:block overflow-x-auto card-gradient rounded-xl p-4">
+        <div className="hidden md:block overflow-x-auto bg-black/20 backdrop-blur-md border border-slate-800/50 rounded-xl p-4">
           <table className="w-full table-pricing min-w-[800px]">
             <thead>
               <tr className="border-b border-gray-800">
