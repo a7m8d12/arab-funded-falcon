@@ -2,14 +2,10 @@
 import React, { useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Header from '@/components/Header';
-import Hero from '@/components/Hero';
-import PricingSection from '@/components/PricingSection';
-import FeaturesSection from '@/components/FeaturesSection';
-import CTASection from '@/components/CTASection';
 import RulesSection from '@/components/RulesSection';
-import FAQSection from '@/components/FAQSection';
+import CTASection from '@/components/CTASection';
 
-const Index = () => {
+const Rules = () => {
   const { isRTL } = useLanguage();
 
   useEffect(() => {
@@ -19,11 +15,14 @@ const Index = () => {
   return (
     <div className={isRTL ? 'rtl' : 'ltr'}>
       <Header />
-      <Hero />
-      <PricingSection />
-      <FeaturesSection />
+      <div className="pt-24 pb-10 bg-background">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold text-white">
+            {isRTL ? 'القوانين وشروط التداول' : 'Trading Rules & Conditions'}
+          </h1>
+        </div>
+      </div>
       <RulesSection />
-      <FAQSection />
       <CTASection />
       <footer className="py-8 bg-background border-t border-gray-800">
         <div className="container mx-auto px-4 text-center text-gray-500">
@@ -34,4 +33,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Rules;
